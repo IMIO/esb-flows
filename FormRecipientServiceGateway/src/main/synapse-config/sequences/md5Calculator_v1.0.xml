@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="md5Calculator_v1.0" trace="disable"
+	xmlns="http://ws.apache.org/ns/synapse">
+	<script description="calculateMD5" language="groovy"><![CDATA[import java.security.MessageDigest
+def payload = mc.getProperty("data_in");
+byte[] bytes =  payload.decodeBase64()
+def md5 = MessageDigest.getInstance("MD5").digest(bytes).encodeHex().toString().toUpperCase()
+mc.setProperty("md5_out", md5)]]></script>
+</sequence>

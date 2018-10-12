@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<artifacts>
+    <artifact name="wsdl-FormRecipientService-1.1" groupId="imio.FormRecipientServiceGateway.resource" version="1.1.0" type="registry/resource" serverRole="EnterpriseServiceBus">
+        <item>
+            <file>wsdl/formRecipientService/1.1.0/formRecipientV1_1.wsdl</file>
+            <path>/_system/config/wsdl/formRecipientService/1.1.0</path>
+            <mediaType>application/wsdl+xml</mediaType>
+        </item>
+        <collection>
+            <directory>wsdl/formRecipientService/1.1.0/messages</directory>
+            <path>/_system/config/wsdl/formRecipientService/1.1.0/messages</path>
+        </collection>        
+    </artifact>
+</artifacts>
