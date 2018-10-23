@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sequence name="CreateGatewayFault_v1.0" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
-  <makefault version="soap11">
-    <code value="soap11Env:Server" xmlns:soap11Env="http://schemas.xmlsoap.org/soap/envelope/"/>
-    <reason value="20000 - Internal Server Error. Please contact us with the environment, request and exact time you got this error."/>
-  </makefault>
-  <respond/>
-</sequence>
