@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sequence name="CreateGWFault" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
-  <makefault version="soap11">
-    <code value="soap11Env:Server" xmlns:soap11Env="http://schemas.xmlsoap.org/soap/envelope/"/>
-    <reason value="20000 - Internal Server Error. Please contact us with the environment, request and exact time you got this error."/>
-  </makefault>
-  <respond/>
+<sequence name="CreateGWFault" trace="disable"	xmlns="http://ws.apache.org/ns/synapse">
+
+	<property name="EmptyError"		expression="boolean(get-property('erroCode')) and boolean(get-property('erroMessage'))" />
+
+	<header name="Content-Type" scope="transport" value="application/xml" />
+	<property name="messageType" scope="axis2" value="application/xml" />
+	<property name="Content-Type" scope="transport" action="remove" />
+
+	<filter source="get-property('EmptyError')" regex="false">
+		<then>
+			<makefault version="soap11">
+				<code value="soap11Env:Server" xmlns:soap11Env="http://schemas.xmlsoap.org/soap/envelope/" />
+				<reason
+					value="20000 - Internal Server Error. Please contact us with the environment, request and exact time you got this error." />
+			</makefault>
+
+		</then>
+		<else>
+			<makefault version="soap11">
+				<code value="soap11Env:Server" xmlns:soap11Env="http://schemas.xmlsoap.org/soap/envelope/" />
+				<reason
+					expression="fn:concat('erroCode : ',get-property('erroCode'),' _ erroMessage : ',get-property('erroMessage'))" />
+			</makefault>
+		</else>
+	</filter>
+
+			<respond/>
 </sequence>

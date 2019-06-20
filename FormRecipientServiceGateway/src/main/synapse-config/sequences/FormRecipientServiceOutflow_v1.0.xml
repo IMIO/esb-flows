@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="FormRecipientServiceOutflow_v1.0" onError="CreateGWFault" xmlns="http://ws.apache.org/ns/synapse">
+
+		<log level="custom">
+		<property value="FormRecipientServiceOutflow_v1.0" name="sequenceName" />
+		</log>
+	
+			<log level="custom">
+				<property expression="get-property('axis2', 'HTTP_SC')" name="http_response"/>
+				<property expression="$body" name="http_body_response"/>
+				
+			</log>
+
+	<filter regex="200" source="get-property('axis2', 'HTTP_SC')" xmlns:ns="http://org.apache.synapse/xsd">
+		<then>
+			
+			<property expression="json-eval($.application_id)" name="application_id"
+				scope="default" type="STRING" xmlns:ns="http://org.apache.synapse/xsd" />
+			<property expression="json-eval($.client_id)" name="client_id"
+				scope="default" type="STRING" xmlns:ns="http://org.apache.synapse/xsd" />
+			<property expression="json-eval($.request_id)" name="request_id"
+				scope="default" type="STRING" xmlns:ns="http://org.apache.synapse/xsd" />
+
+
+			<payloadFactory media-type="xml">
+				<format>
+					<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+						<soapenv:Header />
+						<soapenv:Body>
+							<v1:publishFormResponse
+								xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+								xmlns:v11="http://spw.wallonie.be/common/status/v1">
+								<v1:technicalStatus source="SPW">
+									<v11:value>SUCCESS</v11:value>
+									<v11:code>$1</v11:code>
+									<v11:description>$2</v11:description>
+									<v11:ticket source="BCSS">$3</v11:ticket>
+								</v1:technicalStatus>
+							</v1:publishFormResponse>
+						</soapenv:Body>
+					</soapenv:Envelope>
+				</format>
+				<args>
+					<arg evaluator="xml" 	expression="get-property('request_id')" />
+					<arg evaluator="xml"	expression="fn:concat('client_id : ',get-property('client_id'),' _ application_id : ',get-property('application_id'))" />
+					<arg evaluator="xml" 	expression="fn:substring-after(get-property('MessageID'),'urn:uuid:')" />
+				</args>
+			</payloadFactory>
+
+
+				<header name="Content-Type" scope="transport" value="application/xml"/>
+				<property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+		</then>
+		<else>
+			<sequence key="CreateGWFault"/>
+		</else>
+	</filter>
+
+			
+
+</sequence>

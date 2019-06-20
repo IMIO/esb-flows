@@ -11,4 +11,11 @@
             <path>/_system/config/wsdl/formRecipientService/messages</path>
         </collection>        
     </artifact>
+    <artifact name="Config.xml">
+        <item>
+            <file>environment/Config.xml</file>
+            <path>/_system/config/environment</path>
+            <mediaType>application/xml</mediaType>
+        </item>
+    </artifact>
 </artifacts>

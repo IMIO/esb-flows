@@ -1,60 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--edited with XMLSpy v2011 sp1 (http://www.altova.com) by End User (free.org)--><wsdl:definitions targetNamespace="http://spw.wallonie.be/services/form/v1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://spw.wallonie.be/services/form/v1" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:err="http://spw.wallonie.be/data/common/error/v1" xmlns:msg="http://spw.wallonie.be/services/form/messages/v1" xmlns:ns="http://spw.wallonie.be/common/identification/v1" xmlns:ns1="http://spw.wallonie.be/common/privacylog/v1" xmlns:ns2="http://spw.wallonie.be/common/status/v1" xmlns:ns3="http://spw.wallonie.be/data/business/form/form/v1" xmlns:ns4="http://spw.wallonie.be/data/common/code/v1" xmlns:ns5="http://spw.wallonie.be/data/common/date/v1" xmlns:ns6="http://spw.wallonie.be/data/common/label/v1" xmlns:ns7="http://spw.wallonie.be/data/entity/form/formData/v1" xmlns:ns8="http://spw.wallonie.be/data/entity/form/formType/v1" xmlns:ns9="http://spw.wallonie.be/services/form/messages/v1" xmlns:ns10="http://spw.wallonie.be/data/common/isocodes/v1" xmlns:ns11="http://spw.wallonie.be/data/common/ticket/v1">
-  <wsdl:types>
-    <xs:schema targetNamespace="http://dgo7.wallonie.be/services/form/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
-      <xs:import namespace="http://spw.wallonie.be/services/form/messages/v1" schemaLocation="form_recipient.xsd"/>
-      <xs:import namespace="http://spw.wallonie.be/data/common/error/v1" schemaLocation="error.xsd"/>
-    </xs:schema>
-  </wsdl:types>
-  <wsdl:message name="publishFormRequest">
-    <wsdl:part name="parameters" element="msg:publishForm"/>
-  </wsdl:message>
-  <wsdl:message name="publishFormResponse">
-    <wsdl:part name="parameters" element="msg:publishFormResponse"/>
-  </wsdl:message>
-  <wsdl:message name="fault">
-    <wsdl:part name="fault" element="err:error"/>
-  </wsdl:message>
-  <wsdl:portType name="formPortType">
-    <wsdl:operation name="publishForm">
-      <wsdl:input message="tns:publishFormRequest"/>
-      <wsdl:output message="tns:publishFormResponse"/>
-      <wsdl:fault name="fault" message="tns:fault"/>
-    </wsdl:operation>
-  </wsdl:portType>
-  <wsdl:binding name="formSoap12Binding" type="tns:formPortType">
-    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="publishForm">
-      <soap12:operation soapAction="http://spw.wallonie.be/services/form/v1/publishForm" soapActionRequired="true"/>
-      <wsdl:input>
-        <soap12:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="fault">
-        <soap12:fault name="fault" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-  </wsdl:binding>
-  <wsdl:service name="FormV1DGO7">
-    <wsdl:port name="formDgo7Port" binding="tns:formSoap12Binding">
-      <soap12:address location="http://dgo7URL/formV1"/>
-    </wsdl:port>
-  </wsdl:service>
-  <wsdl:service name="FormV1CENM">
-    <wsdl:port name="formCENMPort" binding="tns:formSoap12Binding">
-      <soap12:address location="http://cenmURL/formV1"/>
-    </wsdl:port>
-  </wsdl:service>
-  <wsdl:service name="FormV1Civadis">
-    <wsdl:port name="formCivadisPort" binding="tns:formSoap12Binding">
-      <soap12:address location="http://civadisURL/formV1"/>
-    </wsdl:port>
-  </wsdl:service>
-  <wsdl:service name="FormV1Imio">
-    <wsdl:port name="formImioPort" binding="tns:formSoap12Binding">
-      <soap12:address location="http://imioURL/formV1"/>
-    </wsdl:port>
-  </wsdl:service>
+<!--edited with XMLSpy v2011 sp1 (http://www.altova.com) by End User (free.org) -->
+<wsdl:definitions targetNamespace="http://spw.wallonie.be/services/form/v1"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://spw.wallonie.be/services/form/v1"
+	xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:err="http://spw.wallonie.be/data/common/error/v1"
+	xmlns:msg="http://spw.wallonie.be/services/form/messages/v1" xmlns:ns="http://spw.wallonie.be/common/identification/v1"
+	xmlns:ns1="http://spw.wallonie.be/common/privacylog/v1" xmlns:ns2="http://spw.wallonie.be/common/status/v1"
+	xmlns:ns3="http://spw.wallonie.be/data/business/form/form/v1"	xmlns:ns4="http://spw.wallonie.be/data/common/code/v1" 
+	xmlns:ns5="http://spw.wallonie.be/data/common/date/v1"
+	xmlns:ns6="http://spw.wallonie.be/data/common/label/v1" xmlns:ns7="http://spw.wallonie.be/data/entity/form/formData/v1"
+	xmlns:ns8="http://spw.wallonie.be/data/entity/form/formType/v1"	xmlns:ns9="http://spw.wallonie.be/services/form/messages/v1"
+	xmlns:ns10="http://spw.wallonie.be/data/common/isocodes/v1" xmlns:ns11="http://spw.wallonie.be/data/common/ticket/v1">
+	
+	<wsdl:types>
+		<xs:schema targetNamespace="http://dgo7.wallonie.be/services/form/v1"			elementFormDefault="qualified" attributeFormDefault="unqualified">
+			<xs:import namespace="http://spw.wallonie.be/services/form/messages/v1"		schemaLocation="form_recipient.xsd" />
+			<xs:import namespace="http://spw.wallonie.be/data/common/error/v1"			schemaLocation="error.xsd" />
+		</xs:schema>
+	</wsdl:types>
+	
+	<wsdl:message name="publishFormRequest">
+		<wsdl:part name="parameters" element="msg:publishForm" />
+	</wsdl:message>
+	<wsdl:message name="publishFormResponse">
+		<wsdl:part name="parameters" element="msg:publishFormResponse" />
+	</wsdl:message>
+	<wsdl:message name="fault">
+		<wsdl:part name="fault" element="err:error" />
+	</wsdl:message>
+	<wsdl:portType name="formPortType">
+		<wsdl:operation name="publishForm">
+			<wsdl:input message="tns:publishFormRequest" />
+			<wsdl:output message="tns:publishFormResponse" />
+			<wsdl:fault name="fault" message="tns:fault" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="formSoap12Binding" type="tns:formPortType">
+		<soap12:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="publishForm">
+			<soap12:operation
+				soapAction="http://spw.wallonie.be/services/form/v1/publishForm"
+				soapActionRequired="true" />
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap12:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="FormV1DGO7">
+		<wsdl:port name="formDgo7Port" binding="tns:formSoap12Binding">
+			<soap12:address location="http://dgo7URL/formV1" />
+		</wsdl:port>
+	</wsdl:service>
+	<wsdl:service name="FormV1CENM">
+		<wsdl:port name="formCENMPort" binding="tns:formSoap12Binding">
+			<soap12:address location="http://cenmURL/formV1" />
+		</wsdl:port>
+	</wsdl:service>
+	<wsdl:service name="FormV1Civadis">
+		<wsdl:port name="formCivadisPort" binding="tns:formSoap12Binding">
+			<soap12:address location="http://civadisURL/formV1" />
+		</wsdl:port>
+	</wsdl:service>
+	<wsdl:service name="FormV1Imio">
+		<wsdl:port name="formImioPort" binding="tns:formSoap12Binding">
+			<soap12:address location="https://api.imio.be/services/FormRecipientService_v1.0" />
+		</wsdl:port>
+	</wsdl:service>
 </wsdl:definitions>

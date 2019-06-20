@@ -1,82 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proxy xmlns="http://ws.apache.org/ns/synapse"
-       name="FormRecipientService_v1.0"
-       startOnLoad="true"
-       statistics="disable"
-       trace="disable"
-       transports="https">
-   <target>
-      <inSequence>
-         <property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
-                   xmlns:v13="http://spw.wallonie.be/data/entity/form/formType/v1"
-                   xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
-                   xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
-                   xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
-                   xmlns:v11="http://spw.wallonie.be/common/identification/v1"
-                   expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:xml/v14:data/text()"
-                   name="data_in"
-                   scope="default"
-                   type="STRING"/>
-         <property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
-                   xmlns:v13="http://spw.wallonie.be/data/entity/form/formType/v1"
-                   xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
-                   xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
-                   xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
-                   xmlns:v11="http://spw.wallonie.be/common/identification/v1"
-                   expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:xml/v14:integrityCheck/text()"
-                   name="md5_in"
-                   scope="default"
-                   type="STRING"/>
-         <log level="full"/>
-         <log level="custom">
-            <property expression="$ctx:data_in" name="data_in"/>
-            <property expression="$ctx:md5_in" name="md5_in"/>
-         </log>
-         <sequence key="md5Calculator_v1.0"/>
-         <log level="custom">
-            <property expression="$ctx:md5_out" name="md5_out"/>
-         </log>
-         <sequence key="FormRecipientServiceInflow_v1.0"/>
-         <respond/>
-      </inSequence>
-      <outSequence/>
-      <faultSequence>
-         <sequence key="CreateGatewayFault_v1.0"/>
-      </faultSequence>
-   </target>
-   <publishWSDL key="conf:wsdl/formRecipientService/1.1.0/formRecipientV1_1.wsdl">
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/form_v1_recipient.xsd"
-                location="form_v1_recipient.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/formData_v1.xsd"
-                location="formData_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/code_v1.xsd"
-                location="code_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/isocodes_v1.xsd"
-                location="isocodes_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/identification_v1.xsd"
-                location="identification_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/status_v1.xsd"
-                location="status_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/privacy_v1.xsd"
-                location="privacy_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/labels_v1.xsd"
-                location="labels_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/date_v1.xsd"
-                location="date_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/formType_v1.xsd"
-                location="formType_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/error_v1.xsd"
-                location="error_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/form_v1.xsd"
-                location="form_v1.xsd"/>
-      <resource key="conf:wsdl/formRecipientService/1.1.0/messages/ticket_v1.xsd"
-                location="ticket_v1.xsd"/>
-   </publishWSDL>
-   <parameter name="ScenarioID">scenario2</parameter>
-   <parameter name="disableREST">true</parameter>
-   <parameter name="engagedModules">requesttimestamp</parameter>
-   <parameter name="disableSOAP12">true</parameter>
-   <enableSec/>
-   <description/>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="FormRecipientService_v1.0"
+	startOnLoad="true" statistics="disable" trace="disable" transports="http,https">
+	<target>
+		<inSequence>
+		
+			<sequence key="FormRecipientServiceintegrityCheck_v1.0" />
+			
+			<sequence key="FormRecipientServiceInflow_v1.0" />
+
+			<sequence key="FormRecipientServiceOutflow_v1.0" />
+			
+			<property action="set" name="enableSwA" scope="axis2" type="STRING" value="true"/>
+            <property action="set" name="ContentType" scope="axis2" type="STRING" value="multipart/related"/>
+            <property action="remove" name="Content-Type" scope="transport"/>
+			<respond/>
+		</inSequence>
+		<outSequence />
+		<faultSequence>
+			<sequence key="CreateGWFault" />
+		</faultSequence>
+	</target>
+	<publishWSDL key="conf:wsdl/formRecipientService/formRecipient.wsdl">
+		<resource key="conf:wsdl/formRecipientService/messages/form_recipient.xsd"
+			location="form_recipient.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/formData.xsd"
+			location="formData.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/code.xsd"
+			location="code.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/isocodes.xsd"
+			location="isocodes.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/identification.xsd"
+			location="identification.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/status.xsd"
+			location="status.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/privacy.xsd"
+			location="privacy.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/labels.xsd"
+			location="labels.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/date.xsd"
+			location="date.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/formType.xsd"
+			location="formType.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/error.xsd"
+			location="error.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/form.xsd"
+			location="form.xsd" />
+		<resource key="conf:wsdl/formRecipientService/messages/ticket.xsd"
+			location="ticket.xsd" />
+	</publishWSDL>
+	<parameter name="ScenarioID">scenario2</parameter>
+	<parameter name="disableREST">true</parameter>
+	<parameter name="engagedModules">requesttimestamp</parameter>
+	<parameter name="disableSOAP12">true</parameter>
+	<parameter name="enableSwA">true</parameter>
+	<enableSec />
+	<description />
 </proxy>
                                 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="FormRecipientServiceDBCityLookUp_v1.0" onError="CreateGWFault"
+	xmlns="http://ws.apache.org/ns/synapse">
+
+	<log level="custom">
+		<property name="sequenceName" value="FormRecipientServiceDBCityLookUp_v1.0" />
+	</log>
+
+
+	<log level="custom">
+		<property name="city_ins_code" expression="$ctx:city_ins_code" />
+	</log>
+
+	<dblookup xmlns="http://ws.apache.org/ns/synapse">
+		<connection>
+			<pool>
+				<password>seuQueeD5ex8quuquiGeiy3keishu8ei</password>
+				<driver>org.postgresql.Driver</driver>
+				<url>jdbc:postgresql://database.lan.imio.be:5432/imio_mapping</url>
+				<user>imio_editor</user>
+			</pool>
+		</connection>
+		<statement>
+			<sql>select city_id, city_bce_code from zipcode_municipality_mapping  where city_ins_code=?</sql>
+			<parameter type="NUMERIC" expression="$ctx:city_ins_code" />
+			<result name="city_id" column="city_id" />
+			<result name="city_bce_code" column="city_bce_code" />
+		</statement>
+	</dblookup>
+
+
+	<log level="custom">
+		<property name="city_id" expression="$ctx:city_id" />
+		<property name="city_bce_code" expression="$ctx:city_bce_code" />
+	</log>
+
+</sequence>

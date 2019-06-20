@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="FormRecipientServiceintegrityCheck_v1.0" onError="CreateGWFault" xmlns="http://ws.apache.org/ns/synapse">
+
+		<log level="custom">
+			<property value="FormRecipientServiceintegrityCheck_v1.0 - Begin" name="sequenceName" />
+		</log>
+	
+			<!-- 
+			XML
+			 -->
+			 
+	<property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+				xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+				xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+				expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:xml/v14:data/text()"
+				name="data_in" scope="default" type="STRING" />
+			<property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+				xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+				xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+				expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:xml/v14:integrityCheck/text()"
+				name="md5_in" scope="default" type="STRING" />
+
+			<sequence key="md5Calculator_v1.0" />
+			
+			<log level="custom">
+				<property expression="$ctx:md5_out" name="md5_out_xml" />
+			</log>
+
+			<property name="md5Compare_xml" 	expression="get-property('md5_in') = get-property('md5_out')" />
+
+			<log level="custom">
+				<property name="md5Compare_xml" expression="get-property('md5Compare_xml')" />
+			</log>
+
+			<filter source="get-property('md5Compare_xml')" regex="true">
+				<then>
+					<log level="custom">
+						<property name="filterA" value="worked" />
+					</log>
+				</then>
+				<else>
+					<log level="custom" category="ERROR">
+						<property name="filterA" value="checking integrityCheck FAILED" />
+					</log>
+					
+				<property name="erroCode" 	value="50000" />
+				<property name="erroMessage" 	value="Error while checking integrityCheck of xml" />
+				
+					<sequence key="CreateGWFault" />
+				</else>
+			</filter>
+			
+			<property name="data_in" action="remove" scope="default"/>
+			<property name="md5_in" action="remove" scope="default"/>
+			<property name="md5_out" action="remove" scope="default"/>
+			
+			<!-- 
+			PDF
+			 -->
+			
+			<property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+				xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+				xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+				xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+				expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:pdf/v14:data/text()"
+				name="data_in" scope="default" type="STRING" />
+			<property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+				xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+				xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+				expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:pdf/v14:integrityCheck/text()"
+				name="md5_in" scope="default" type="STRING" />
+
+
+			<sequence key="md5Calculator_v1.0" />
+
+			<log level="custom">
+				<property expression="$ctx:md5_out" name="md5_out_pdf" />
+			</log>
+
+			<property name="md5Compare_pdf" 	expression="get-property('md5_in') = get-property('md5_out')" />
+
+			<log level="custom">
+				<property name="md5Compare_pdf" expression="get-property('md5Compare_pdf')" />
+			</log>
+
+			<filter source="get-property('md5Compare_pdf')" regex="true">
+				<then>
+					<log level="custom">
+						<property name="filterB" value="worked" />
+					</log>
+				</then>
+				<else>
+				
+				<log level="custom" category="ERROR">
+						<property name="filterB" value="checking integrityCheck FAILED" />
+					</log>
+				
+				<property name="erroCode" 	value="50000" />
+				<property name="erroMessage" 	value="Error while checking integrityCheck of pdf" />
+				
+					<sequence key="CreateGWFault" />
+				</else>
+			</filter>
+			
+			
+			<property name="data_in" action="remove" scope="default"/>
+			<property name="md5_in" action="remove" scope="default"/>
+			<property name="md5_out" action="remove" scope="default"/>
+			
+			<!-- 
+			ZIP
+			 -->
+			
+			<property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+				xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+				xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+				xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+				expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:attachments/v14:attachmentArchive/v14:data/text()"
+				name="data_in" scope="default" type="STRING" />
+			<property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+				xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+				xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+				expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:attachments/v14:attachmentArchive/v14:integrityCheck/text()"
+				name="md5_in" scope="default" type="STRING" />
+
+			<sequence key="md5Calculator_v1.0" />
+
+			<log level="custom">
+				<property expression="$ctx:md5_out" name="md5_out_zip" />
+			</log>
+
+			<property name="md5Compare_zip" 	expression="get-property('md5_in') = get-property('md5_out')" />
+
+			<log level="custom">
+				<property name="md5Compare" expression="get-property('md5Compare_zip')" />
+			</log>
+
+			<filter source="get-property('md5Compare_zip')" regex="true">
+				<then>
+					<log level="custom">
+						<property name="filterC" value="worked" />
+					</log>
+				</then>
+				<else>
+				
+				<log level="custom" category="ERROR">
+						<property name="filterC" value="checking integrityCheck FAILED" />
+					</log>
+					
+				<property name="erroCode" 	value="50000" />
+				<property name="erroMessage" 	value="Error while checking integrityCheck of ZIP" />
+				
+					<sequence key="CreateGWFault" />
+				</else>
+			</filter>
+			
+			<property name="data_in" action="remove" scope="default"/>
+			<property name="md5_in" action="remove" scope="default"/>
+			<property name="md5_out" action="remove" scope="default"/>
+			
+			
+			<log level="custom">
+				<property value="FormRecipientServiceintegrityCheck_v1.0 - Exit ok" name="sequenceName" />
+			</log>
+
+</sequence>

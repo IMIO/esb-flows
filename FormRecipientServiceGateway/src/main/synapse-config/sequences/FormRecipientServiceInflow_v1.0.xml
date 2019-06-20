@@ -1,45 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sequence name="FormRecipientServiceInflow_v1.0" onError="CreateGatewayFault_v1.0"
-	trace="disable" xmlns="http://ws.apache.org/ns/synapse">
-	<log level="full" />
-	<payloadFactory media-type="json">
-		<format>{"login": "wso2","password": "chohGh3Eem!"}</format>
-		<args />
-	</payloadFactory>
-	<property action="remove" name="REST_URL_POSTFIX" scope="axis2" />
-	<property name="HTTP_METHOD" scope="axis2" type="STRING"
-		value="POST" />
-	<header name="Accept" scope="transport" value="application/json" />
-	<header name="Content-Type" scope="transport" value="application/json" />
-	<log level="full" />
-	<call />
-	<log level="full" />
-	<filter regex="200" source="get-property('axis2', 'HTTP_SC')"
-		xmlns:ns="http://org.apache.synapse/xsd">
-		<then>
-			<log level="custom">
-				<property expression="get-property('axis2', 'HTTP_SC')"
-					name="http_response" />
-			</log>
-		</then>
-		<else />
-	</filter>
-	<property expression="json-eval($.token)" name="token" scope="default"
-		type="STRING" />
+<sequence name="FormRecipientServiceInflow_v1.0" onError="CreateGWFault"
+	xmlns="http://ws.apache.org/ns/synapse">
+	
 	<log level="custom">
-		<property expression="json-eval($.token)" name="token1" />
+		<property  name="sequenceName"  value="FormRecipientServiceInflow_v1.0" />
 	</log>
-	<payloadFactory media-type="xml">
+
+	<property
+		expression="get-property('registry','conf:/environment/Config.xml')"
+		name="EnvConf" scope="default" type="OM" />
+	
+	<!-- transform xml dataStore to Json -->
+	<sequence key="FormRecipientServiceFormDataToJson_v1.0"/>
+	
+	<!-- mediate municilpaly zipCode to name -->
+	<sequence key="FormRecipientServiceDBCityLookUp_v1.0" />
+		
+	<property
+		expression="$ctx:EnvConf/conf:endpoints/conf:endpoint[@id='ImioMiddleWareRequestEndpoint']"
+		name="ImioMiddleWareRequestEndpoint" scope="default" type="STRING"
+		xmlns:conf="http://spw.wallonie.be/conf/env/v1" />
+	
+		<log level="custom">
+			<property name="EnvConf" expression="get-property('ImioMiddleWareRequestEndpoint')" />
+		</log>
+		
+		<property  	name="archiveType"
+				   	expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:attachments/v14:attachmentArchive/@archiveType"
+    				xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+					xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+					xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1" />
+
+		<property  name="archiveMime" expression="$ctx:EnvConf/conf:mimeMappingTable/conf:mimetype[@id=$ctx:archiveType]" xmlns:conf="http://spw.wallonie.be/conf/env/v1" />
+	
+
+	<payloadFactory media-type="json">
 		<format>
-			<v1:publishFormResponse xmlns:stat="http://spw.wallonie.be/common/status/v1"
-				xmlns:v1="http://spw.wallonie.be/services/form/messages/v1">
-				<stat:token>$1</stat:token>
-				<stat:technicalStatus>OK</stat:technicalStatus>
-				<stat:businessStatus>OK</stat:businessStatus>
-			</v1:publishFormResponse>
+			{
+				"client_id": "LIEGE",
+				"application_id": "URBAN",
+				"request_type": "POST",
+				"path": "/@esb_envclassthree",
+				"parameters": {
+					"formTypeId": "$3",
+					"formName": "$4",
+					"formVersion": "$5",
+					"submissionDate":"$6",
+					"json": "$7",
+					"pdf": "$8",
+					"attachmentArchive": {
+						"data": "$9",
+						"archiveType": "$10",
+						"archiveMimeType" : "$11"
+					}
+				}
+			}
 		</format>
 		<args>
-			<arg evaluator="xml" expression="get-property('token')" xmlns:ns="http://org.apache.synapse/xsd" />
+			<arg evaluator="xml" expression="$ctx:city_bce_code"/>
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:issuer/v11:applicationId/text()"
+								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+								 xmlns:v11="http://spw.wallonie.be/common/identification/v1"/>
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:form/v12:formType/v13:formTypeId/text()"
+								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+								 xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+								 xmlns:v13="http://spw.wallonie.be/data/entity/form/formType/v1" />
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:form/v12:formType/v13:formName/text()"
+								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+								 xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+								 xmlns:v13="http://spw.wallonie.be/data/entity/form/formType/v1" />				 
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:form/v12:formType/v13:formVersion/text()"
+								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+							 	 xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+							 	 xmlns:v13="http://spw.wallonie.be/data/entity/form/formType/v1" />
+			<arg evaluator="xml" expression="//v14:submissionDate/text()"	 xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"/>
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:xml/v14:data/text()"
+								 xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+								 xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1" />
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:pdf/v14:data/text()"
+								 xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+								 xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1" />
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:attachments/v14:attachmentArchive/v14:data/text()"
+								 xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+								 xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1" />
+			<arg evaluator="xml" expression="$ctx:archiveType" />
+			<arg evaluator="xml" expression="$ctx:archiveMime" />
 		</args>
 	</payloadFactory>
+	
+	
+	
+	<property action="remove" name="REST_URL_POSTFIX" scope="axis2"/>
+	<property name="HTTP_METHOD" scope="axis2" type="STRING" value="POST"/>
+	<property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+	<header name="Accept" scope="transport" value="application/json"/>
+	<header name="Content-Type" scope="transport" value="application/json"/>
+	<header expression="$ctx:ImioMiddleWareRequestEndpoint" name="To" scope="default"/>
+
+	<log level="full"/>
+
+	<call>
+		<endpoint>
+				<address statistics="enable" trace="enable" />
+		</endpoint>
+	</call>
+	
 </sequence>

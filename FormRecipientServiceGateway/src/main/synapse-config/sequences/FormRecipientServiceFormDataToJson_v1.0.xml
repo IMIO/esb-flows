@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="FormRecipientServiceFormDataToJson_v1.0"
+	onError="CreateGWFault" xmlns="http://ws.apache.org/ns/synapse">
+
+	<log level="custom">
+		<property  name="sequenceName" value="FormRecipientServiceFormDataToJson_v1.0"	 />
+	</log>
+
+	<property xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+		xmlns:v1="http://spw.wallonie.be/services/form/messages/v1" xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+		expression="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:xml/v14:data/text()"
+		name="xml_encoded" scope="default" type="STRING" />
+
+	<property expression="base64Decode(get-property('xml_encoded'))"
+		name="xml_decoded" scope="default" type="STRING" />
+
+	<property expression="base64Decode(get-property('xml_encoded'))"
+		name="xml_decoded_OM" scope="default" type="OM" />
+
+	<property name="city_ins_code" expression="$ctx:xml_decoded_OM//insAdresse/text()"/>
+
+		<property action="remove" name="xml_decoded_OM" scope="default"/>
+		<property action="remove" name="xml_encoded" scope="default"/>
+
+			<script description="xmlTojson" language="groovy"><![CDATA[
+		
+				import org.json.JSONObject
+				import org.json.XML
+			
+				def payload = mc.getProperty("xml_decoded");
+				payload = payload.replaceAll("class=\".*\"", "");
+				def xmlJSONObj = XML.toJSONObject(payload);
+				def json_out = xmlJSONObj.toString();
+				
+				mc.setProperty("json_out", json_out)]]>
+			</script>
+
+	<property expression="base64Encode(get-property('json_out'))"
+		name="json_encoded" scope="default" type="STRING" />
+		
+
+	<enrich>
+		<source type="property" clone="true" property="json_encoded" />
+		<target xmlns:v14="http://spw.wallonie.be/data/entity/form/formData/v1"
+			xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
+			xmlns:v12="http://spw.wallonie.be/data/business/form/form/v1"
+			xpath="//v1:publishForm/v1:publish/v1:form/v12:formData/v14:formBinaryData/v14:xml/v14:data/text()" />
+	</enrich>
+
+		<property action="remove" name="json_out" scope="default"/>
+		<property action="remove" name="json_encoded" scope="default"/>
+		
+</sequence>
