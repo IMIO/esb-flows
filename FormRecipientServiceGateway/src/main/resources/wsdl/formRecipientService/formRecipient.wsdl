@@ -54,23 +54,7 @@
 				<soap12:fault name="fault" use="literal" />
 			</wsdl:fault>
 		</wsdl:operation>
-	</wsdl:binding>
-	<wsdl:service name="FormV1DGO7">
-		<wsdl:port name="formDgo7Port" binding="tns:formSoap12Binding">
-			<soap12:address location="http://dgo7URL/formV1" />
-		</wsdl:port>
-	</wsdl:service>
-	<wsdl:service name="FormV1CENM">
-		<wsdl:port name="formCENMPort" binding="tns:formSoap12Binding">
-			<soap12:address location="http://cenmURL/formV1" />
-		</wsdl:port>
-	</wsdl:service>
-	<wsdl:service name="FormV1Civadis">
-		<wsdl:port name="formCivadisPort" binding="tns:formSoap12Binding">
-			<soap12:address location="http://civadisURL/formV1" />
-		</wsdl:port>
-	</wsdl:service>
-	<wsdl:service name="FormV1Imio">
+	</wsdl:binding>	<wsdl:service name="FormV1Imio">
 		<wsdl:port name="formImioPort" binding="tns:formSoap12Binding">
 			<soap12:address location="https://api.imio.be/services/FormRecipientService_v1.0" />
 		</wsdl:port>

@@ -1,6 +1,40 @@
 <!-- This file is a sample for bus specific environment configuration. -->
 <environment xmlns="http://spw.wallonie.be/conf/env/v1">
-	
+	<endpoints>
 
+		<!-- Internal backends -->
+	<!-- 	<endpoint id="ImioMiddleWareRequestEndpoint">http://192.168.252.54:6543/request</endpoint>-->
+			<endpoint id="ImioMiddleWareRequestEndpoint">https://webservice.imio-test.be/request</endpoint>
+			<endpoint id="restApi">https://webservice.imio-test.be/request</endpoint> 
+			
+	<!-- Proxies -->
+			<endpoint id="ImioFormRecipientStatusProxy">https://localhost:8243/services/FormRecipientStatusServiceProxy_v1.0</endpoint>
+			<endpoint id="ImioFormRecipientInjectionProxy">https://localhost:8243/services/FormRecipientServiceProxy_v1.0</endpoint>
+		
+	</endpoints>
+	
+	<credentials>
+		<credential id="ImioMiddleWareRequestCredential">
+			<user>imio</user>
+			<password>imio</password>
+		</credential>
+	</credentials>
+
+	<mimeMappingTable>
+		<mimetype id="ZIP">application/zip</mimetype>
+		<mimetype id="GZ">>application/x-gzip</mimetype>
+		<mimetype id="BZIP2">>application/x-bzip2</mimetype>
+		<mimetype id="TAR">>application/x-tar</mimetype>
+		<mimetype id="ZLIB">>application/zlib</mimetype>
+	</mimeMappingTable>
+
+	<dataSources>
+		<dataSource id="imio_mapping">
+			<password>seuQueeD5ex8quuquiGeiy3keishu8ei</password>
+			<driver>org.postgresql.Driver</driver>
+			<url>jdbc:postgresql://database.lan.imio.be:5432/imio_mapping</url>
+			<user>imio_editor</user>
+		</dataSource>
+	</dataSources>
 
 </environment>

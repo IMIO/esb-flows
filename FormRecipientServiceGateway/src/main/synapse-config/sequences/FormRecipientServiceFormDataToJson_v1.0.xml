@@ -13,12 +13,14 @@
 
 	<property expression="base64Decode(get-property('xml_encoded'))"
 		name="xml_decoded" scope="default" type="STRING" />
-
+		
+	
 	<property expression="base64Decode(get-property('xml_encoded'))"
 		name="xml_decoded_OM" scope="default" type="OM" />
 
 	<property name="city_ins_code" expression="$ctx:xml_decoded_OM//insAdresse/text()"/>
 
+	
 		<property action="remove" name="xml_decoded_OM" scope="default"/>
 		<property action="remove" name="xml_encoded" scope="default"/>
 
@@ -28,9 +30,9 @@
 				import org.json.XML
 			
 				def payload = mc.getProperty("xml_decoded");
-				payload = payload.replaceAll("class=\".*\"", "");
 				def xmlJSONObj = XML.toJSONObject(payload);
 				def json_out = xmlJSONObj.toString();
+				json_out = json_out.replaceAll("(\"class\":\"*.*?\",)", "");
 				
 				mc.setProperty("json_out", json_out)]]>
 			</script>

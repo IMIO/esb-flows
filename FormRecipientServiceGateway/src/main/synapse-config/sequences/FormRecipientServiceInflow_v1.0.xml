@@ -40,7 +40,9 @@
 				"client_id": "LIEGE",
 				"application_id": "URBAN",
 				"request_type": "POST",
-				"path": "/@esb_envclassthree",
+				"path": "/@esb_urban_envclassthree",
+				"cache_duration":"3000000",
+				"ignore_cache":"false",
 				"parameters": {
 					"formTypeId": "$3",
 					"formName": "$4",
@@ -58,7 +60,7 @@
 		</format>
 		<args>
 			<arg evaluator="xml" expression="$ctx:city_bce_code"/>
-			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:issuer/v11:applicationId/text()"
+			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:recipient/v11:applicationId/text()"
 								 xmlns:v1="http://spw.wallonie.be/services/form/messages/v1"
 								 xmlns:v11="http://spw.wallonie.be/common/identification/v1"/>
 			<arg evaluator="xml" expression="//v1:publishForm/v1:publish/v1:form/v12:formType/v13:formTypeId/text()"
@@ -100,7 +102,6 @@
 	<header name="Content-Type" scope="transport" value="application/json"/>
 	<header expression="$ctx:ImioMiddleWareRequestEndpoint" name="To" scope="default"/>
 
-	<log level="full"/>
 
 	<call>
 		<endpoint>

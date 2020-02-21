@@ -4,15 +4,15 @@
 	<target>
 		<inSequence>
 		
-			<sequence key="FormRecipientServiceintegrityCheck_v1.0" />
+<!-- 			<sequence key="FormRecipientServiceintegrityCheck_v1.0" /> -->
 			
 			<sequence key="FormRecipientServiceInflow_v1.0" />
 
 			<sequence key="FormRecipientServiceOutflow_v1.0" />
 			
-			<property action="set" name="enableSwA" scope="axis2" type="STRING" value="true"/>
-            <property action="set" name="ContentType" scope="axis2" type="STRING" value="multipart/related"/>
-            <property action="remove" name="Content-Type" scope="transport"/>
+<!-- 			<property action="set" name="enableSwA" scope="axis2" type="STRING" value="true"/> -->
+ <!--             <property action="set" name="ContentType" scope="axis2" type="STRING" value="multipart/related"/> --> 
+<!--             <property action="remove" name="Content-Type" scope="transport"/> -->
 			<respond/>
 		</inSequence>
 		<outSequence />
@@ -48,11 +48,9 @@
 		<resource key="conf:wsdl/formRecipientService/messages/ticket.xsd"
 			location="ticket.xsd" />
 	</publishWSDL>
-	<parameter name="ScenarioID">scenario2</parameter>
 	<parameter name="disableREST">true</parameter>
 	<parameter name="engagedModules">requesttimestamp</parameter>
-	<parameter name="disableSOAP12">true</parameter>
-	<parameter name="enableSwA">true</parameter>
+<!-- 	<parameter name="disableSOAP12">true</parameter> -->
 	<enableSec />
 	<description />
 </proxy>
